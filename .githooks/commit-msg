@@ -1,0 +1,17 @@
+#!/bin/sh
+# Exige o ID da tarefa do Notion na mensagem do commit. Ex.: feat(auth): login com JWT [SAAS-22]
+msg=$(head -n1 "$1")
+
+# Libera merges, reverts e fixups gerados pelo git
+case "$msg" in
+  Merge*|Revert*|fixup!*|squash!*) exit 0 ;;
+esac
+
+if ! echo "$msg" | grep -qE '\[SAAS-[0-9]+\]'; then
+  echo ""
+  echo "  ✖ Commit sem ID de tarefa."
+  echo "    Inclua o ID do Notion no fim da mensagem, por exemplo:"
+  echo "    feat(auth): login com JWT [SAAS-22]"
+  echo ""
+  exit 1
+fi

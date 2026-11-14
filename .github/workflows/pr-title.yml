@@ -1,0 +1,20 @@
+name: Título do PR
+
+on:
+  pull_request:
+    types: [opened, edited, synchronize, reopened]
+
+jobs:
+  checar-id-da-tarefa:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Verificar ID SAAS-n no título
+        env:
+          TITLE: ${{ github.event.pull_request.title }}
+        run: |
+          if echo "$TITLE" | grep -qE 'SAAS-[0-9]+'; then
+            echo "OK: $TITLE"
+          else
+            echo "::error::O título do PR precisa ter o ID da tarefa do Notion (ex.: feat(auth): login com JWT [SAAS-22])"
+            exit 1
+          fi
